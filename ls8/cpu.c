@@ -176,7 +176,7 @@ void cpu_run(struct cpu *cpu)
 
       
 
-      case CMP:
+      case ALU_CMP:
         alu(cpu, ALU_CMP, opA, opB);
         break;
 
