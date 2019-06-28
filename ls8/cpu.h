@@ -20,14 +20,16 @@ enum alu_op {
 
 // Instructions
 
-// These use binary literals. If these aren't available with your compiler, hex
-// literals should be used.
+//  Add the CMP instruction and equal flag to your LS-8.
+
+//  Add the JMP instruction.
+
+//  Add the JEQ and JNE instructions.
 
 #define LDI  0b10000010
 #define PRN  0b01000111
-// TODO: more instructions here. These can be used in cpu_run().
-#define LDI  0b10000010
-#define PRN  0b01000111
+
+
 #define HLT  0b00000001
 #define MUL  0b10100010
 #define PUSH 0b01000101
@@ -43,7 +45,7 @@ enum alu_op {
 
 // Function declarations
 
-extern void cpu_load(struct cpu *cpu);
+extern void cpu_load(struct cpu *cpu, int argc, char *argv[]);
 extern void cpu_init(struct cpu *cpu);
 extern void cpu_run(struct cpu *cpu);
 
