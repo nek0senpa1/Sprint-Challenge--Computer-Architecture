@@ -5,7 +5,7 @@
 struct cpu {
   // TODO
   // PC
-  char pc;
+  char PC;
   // registers (array)
   int registers[16];
 

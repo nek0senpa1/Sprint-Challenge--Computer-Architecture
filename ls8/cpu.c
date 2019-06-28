@@ -133,41 +133,47 @@ void cpu_run(struct cpu *cpu)
   while (running) {
     // TODO
     // 1. Get the value of the current instruction (in address PC).
-    instructs = cpu->ram[cpu->pc];
+    char IR = ram_read(cpu, cpu->PC);
 
 
     // 2. Figure out how many operands this next instruction requires
-    int numberof = (instructs >> 6) +1;
+    int operands = (IR >> 6) + 1;
     
     
     // 3. Get the appropriate value(s) of the operands following this instruction
-    if (numberof > 1) {
-      a = cpu->ram[cpu->pc +1];
-    }
-
-    elif (numberof > 2) {
-      b = cpu->ram[cpu->pc +2];
-
-    }
+    char opA = ram_read(cpu, (cpu->PC + 1) & 0xFF);
+    char opB = ram_read(cpu, (cpu->PC + 2) & 0xFF);
 
 
     swith(instructs) {
-      case JEP:
-      if (equals) {
-        //printf("BOB \n");
-        rob = cpu->ram[cpu->pc +1];
-        cpu->pc = cpu->registers[rob];
+      case HLT:
+        running = 0;
 
-      }
-      else {
-        cpu -> pc= pc + numberof;
-      }
+        break;
 
-      break;
+      case LDI:
+        cpu->registers[opA] = opB;
 
+        break;
+
+      case PRN:
+        printf(" %d \n", cpu->registers[opA]);
+        break;
+
+      case MUL:
+        alu(cpu, ALU_MUL, opA, opB);
+
+        break;
+
+      case POP:
+        cpu->registers[opA] = pop(cpu);
+        
+        break;
+
+      
     
     }
-  }
+  
 
 }
 
@@ -177,7 +183,7 @@ void cpu_run(struct cpu *cpu)
 void cpu_init(struct cpu *cpu)
 {
   
-  cpu->pc = 0;
+  cpu->PC = 0;
 
   cpu->FL = 0;
 
