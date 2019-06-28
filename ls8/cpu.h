@@ -5,17 +5,20 @@
 struct cpu {
   // TODO
   // PC
-  int pc;
+  char pc;
   // registers (array)
   int registers[16];
 
   // ram (array)
   int ram[128];
+
+  char FL;
+  char SP;
 };
 
 // ALU operations
 enum alu_op {
-	ALU_MUL, ALU_OR, ALU_XOR, ALU_MOD, ALU_SHR, ALU_NOT, ALU_SHL
+	ALU_MUL, ALU_OR, ALU_XOR, ALU_MOD, ALU_SHR, ALU_NOT, ALU_SHL, ALU_ADD, ALU_CMP
 };
 
 // Instructions

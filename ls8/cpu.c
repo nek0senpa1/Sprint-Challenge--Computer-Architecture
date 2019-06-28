@@ -29,10 +29,42 @@ char pop(struct cpu *cpu) {
 
 
 
-void cpu_load(struct cpu *cpu)
-{
+void cpu_load(struct cpu *cpu, int argc, char *argv[]){
   
-    printf("hello cpu load thing");
+    // printf("hello cpu load thing");
+
+    FILE *fp;
+
+
+    char line[128];
+
+    if (argc != 2) {
+        printf("usage: ls8 folder/filename\n");
+        exit(1);
+    }
+
+    fp = fopen(argv[1], "r");
+
+    if (fp == NULL) {
+        printf("file %s does not exist\n", argv[1]);
+        exit(1);
+    }
+
+    int address = 0;
+
+    while (fgets(line, sizeof(line), fp) != NULL) {
+        char *endptr;
+        unsigned char value = strtoul(line, &endptr, 2);
+
+        if (line == endptr) {
+        continue;
+        }
+
+        cpu_ram_write(cpu, address, value);
+        address++;
+    }
+
+    fclose(fp);
 
 }
 
@@ -53,12 +85,29 @@ void push(struct cpu *cpu, char val) {
  */
 void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB)
 {
-  switch (op) {
-    case ALU_MUL:
-      // TODO
-      break;
-
-    // TODO: implement more ALU ops
+  switch (op)
+  {
+  case ALU_MUL:
+    // TODO
+    cpu->registers[regA] *= cpu->registers[regB];
+    break;
+  case ALU_ADD:
+    cpu->registers[regA] += cpu->registers[regB];
+    break;
+  case ALU_CMP:
+    if (cpu->registers[regA] == cpu->registers[regB])
+    {
+      cpu->FL = 1;
+    }
+    else if (cpu->registers[regA] > cpu->registers[regB])
+    {
+      cpu->FL = 2;
+    }
+    else
+    {
+      cpu->FL = 4;
+    }
+    break;
   }
 }
 
@@ -102,8 +151,6 @@ void cpu_run(struct cpu *cpu)
     }
 
 
-
-    // 4. switch() over it to decide on a course of action.
     swith(instructs) {
       case JEP:
       if (equals) {
@@ -120,7 +167,7 @@ void cpu_run(struct cpu *cpu)
 
     
     }
-    
+  }
 
 }
 
@@ -129,5 +176,15 @@ void cpu_run(struct cpu *cpu)
  */
 void cpu_init(struct cpu *cpu)
 {
-  // TODO: Initialize the PC and other special registers
+  
+  cpu->pc = 0;
+
+  cpu->FL = 0;
+
+  
+  memset(cpu->ram, 0, sizeof(cpu->ram));
+  memset(cpu->registers, 0, sizeof(cpu->registers));
+
+  
+  cpu->registers[7] = 0xF4;
 }
