@@ -7,28 +7,46 @@
 #define DATA_LEN 6
 
 
+#define SP 7
+
+unsigned char ram_read(struct cpu *cpu, char address) {
+  return cpu->ram[address];
+}
+
+char ram_write(struct cpu *cpu, char address, char value) {
+  return cpu->ram[address] = value;
+}
+
+char pop(struct cpu *cpu) {
+
+  char value = cpu->ram[cpu->registers[SP]];
+
+  cpu->registers[SP]++;
+
+  return value;
+}
+
+
 
 
 void cpu_load(struct cpu *cpu)
 {
-  char data[DATA_LEN] = {
-    // From print8.ls8
-    0b10000010, // LDI R0,8
-    0b00000000,
-    0b00001000,
-    0b01000111, // PRN R0
-    0b00000000,
-    0b00000001  // HLT
-  };
+  
+    printf("hello cpu load thing");
 
-  int address = 0;
-
-  for (int i = 0; i < DATA_LEN; i++) {
-    cpu->ram[address++] = data[i];
-  }
-
-  // TODO: Replace this with something less hard-coded
 }
+
+
+
+
+
+void push(struct cpu *cpu, char val) {
+    //
+    cpu->registers[SP]--;
+
+    ram_write(cpu, cpu->registers[SP], val );
+}
+
 
 /**
  * ALU
@@ -100,17 +118,10 @@ void cpu_run(struct cpu *cpu)
 
       break;
 
-      
-    
-      
     
     }
     
 
-
-    // 5. Do whatever the instruction should do according to the spec.
-    // 6. Move the PC to the next instruction.
-  }
 }
 
 /**
