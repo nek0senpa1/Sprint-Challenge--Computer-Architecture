@@ -91,9 +91,13 @@ void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB
     // TODO
     cpu->registers[regA] *= cpu->registers[regB];
     break;
+
   case ALU_ADD:
     cpu->registers[regA] += cpu->registers[regB];
     break;
+
+
+
   case ALU_CMP:
     if (cpu->registers[regA] == cpu->registers[regB])
     {
@@ -171,6 +175,36 @@ void cpu_run(struct cpu *cpu)
         break;
 
       
+
+      case CMP:
+        alu(cpu, ALU_CMP, opA, opB);
+        break;
+
+
+
+      case JMP:
+        cpu->PC = cpu->registers[opA];
+
+        operands = 0;
+        break;
+
+      case JEQ:
+        if (cpu->FL == 0b00000001) {
+
+          cpu->PC = cpu->registers[opA];
+          operands = 0;
+
+        }
+        break;
+
+      case JNE:
+        if ((cpu->FL == 0b00000001) == 0) {
+
+          cpu->PC = cpu->registers[opA];
+          operands = 0;
+
+        }
+        break;
     
     }
   
